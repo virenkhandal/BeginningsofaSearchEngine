@@ -1,0 +1,18 @@
+train <- read.csv("training.csv", TRUE)
+str(train)
+train$relevance <- as.factor(train$relevance)
+table(train$relevance)
+library(caret)
+set.seed(500)
+ind <- sample(2, nrow(train, replace = TRUE, prob = c(0.1, 0.9))
+trainData <- train[ind==1,]
+testData <- train[ind==2,]
+library(randomForest)
+set.seed(2000)
+library(glmnet)
+fit_glm = glm(relevance~, trainData, family="binomial")
+summary(fit_glm)
+rf1<- randomForest(relevance~ url_id + query_id + query_length + is_homepage + sig1 + sig2 + sig4 + sig5 + sig6 + sig7 + sig8, data = trainData, ntree=2000)
+pred <- predict(rf1, testData)
+conf <- confusionMatrix(pred, testData$relevance)
+conf
